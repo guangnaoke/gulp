@@ -4,17 +4,21 @@ gulp 经常用的配置
 package.json
 
 {
-  "name": "test",
+  "name": "name",
   "version": "1.0.0",
-  "description": "This is backstage !",
+  "description": "description !",
   "devDependencies": {
-    "babel-preset-es2015": "^6.24.0",
-    "browser-sync": "^2.18.8",
+    "babel-preset-es2015": "^6.24.1",
+    "browser-sync": "^2.23.7",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-sass": "^3.1.0"
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-babel": "^6.1.3",
+    "gulp-sass": "^3.2.1",
+    "gulp-uglify": "^3.0.0",
+    "pump": "^3.0.0"
   }
 }
+
 
 .babelrc
 
