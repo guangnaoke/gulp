@@ -24,84 +24,56 @@ package.json
 
 gulpfile.js
 
-var gulp = require("gulp");  
-var babel = require("gulp-babel");  
+var gulp = require("gulp");
+var babel = require("gulp-babel");
 var sass = require('gulp-sass');
+var pump = require('pump');
+var uglify = require('gulp-uglify');
+var autoprefixer = require('gulp-autoprefixer');
 var browserSync = require('browser-sync').create();
-  
-gulp.task("CardCreates", function () {
-  return gulp.src('src/CardCreates/*.js')
-    .pipe(babel()) 
-    .pipe(gulp.dest('./pages/CreateCard'));
+
+gulp.task("pageJS", function () { return gulp.src('src/js/*.js') .pipe(babel()) .pipe(gulp.dest('./dist/js')); });
+
+gulp.task('PageSass',function() { return gulp.src('src/css/*.scss') .pipe(sass()) .pipe(gulp.dest('./dist/css')) });
+
+gulp.task('AutoCss', () =>
+    gulp.src('./dist/css/index.css')
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
+        .pipe(gulp.dest('./dist/css'))
+);
+
+gulp.task('FormateIndexJS', function (cb) {
+  pump([
+        gulp.src('dist/js/index.js'),
+        uglify(),
+        gulp.dest('./dist/js')
+    ],
+    cb
+  );
 });
 
-gulp.task("CreateStore", function () {
-  return gulp.src('src/CreateStore/*.js')
-    .pipe(babel()) 
-    .pipe(gulp.dest('./pages/CreateStore'));
-});
-
-gulp.task("ManagementCard", function () {
-  return gulp.src('src/ManagementCard/*.js')
-    .pipe(babel()) 
-    .pipe(gulp.dest('./pages/ManagementCard'));
-});
-
-gulp.task("Login", function () {
-    return gulp.src('src/Login/*.js')
-        .pipe(babel())
-        .pipe(gulp.dest('./pages/Login'));
-});
-
-gulp.task("ManagementStore", function () {
-    return gulp.src('src/ManagementStore/*.js')
-        .pipe(babel())
-        .pipe(gulp.dest('./pages/ManagementStore'));
-});
-
-gulp.task("Kit", function () {
-    return gulp.src('src/Kit/*.js')
-        .pipe(babel())
-        .pipe(gulp.dest('./pages/Kit'));
-});
-
-gulp.task('IndexSass',function() {
-    return gulp.src('src/scss/index.scss')
-    .pipe(sass())
-    .pipe(gulp.dest('./static/css'))
-});
-
-gulp.task('LoginSass',function() {
-    return gulp.src('src/scss/login.scss')
-        .pipe(sass())
-        .pipe(gulp.dest('./static/css'))
-});
-
-gulp.task('html',function() {
-    gulp.src('index.html')
-});
+gulp.task('html',function() { gulp.src('./dist/index.html') });
 
 gulp.task('default', ['server']);
 
 gulp.task('server', function() {
 
-    browserSync.init({
-        port: 2016,
-        server: {
-            baseDir: ['./']
-        }
-    });
+  browserSync.init({
+      port: 2016,
+      server: {
+          baseDir: ['./dist/']
+      }
+  });
 
-    gulp.watch('src/CardCreates/*.js', ['CardCreates']);
-    gulp.watch('src/CreateStore/*.js', ['CreateStore']);
-    gulp.watch('src/ManagementCard/*.js', ['ManagementCard']);
-    gulp.watch('src/ManagementStore/*.js', ['ManagementStore']);
-    gulp.watch('src/Login/*.js', ['Login']);
-    gulp.watch('src/Kit/*.js', ['Kit']);
-    gulp.watch('src/scss/index.scss', ['IndexSass']);
-    gulp.watch('src/scss/login.scss', ['LoginSass']);
+  gulp.watch('src/js/*.js', ['pageJS']);
+  gulp.watch('dist/js/index.js', ['FormateIndexJS']);
+  gulp.watch('src/css/index.scss', ['PageSass']);
+  gulp.watch('dist/css/index.css', ['AutoCss']);
 
-    gulp.watch('*.html',['html']).on('change', browserSync.reload);
-    gulp.watch('src/scss/*.scss').on('change', browserSync.reload);
-
+  gulp.watch('*.html',['html']).on('change', browserSync.reload);
+  gulp.watch('src/css/*.scss').on('change', browserSync.reload);
+  
 });
