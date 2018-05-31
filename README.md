@@ -25,11 +25,17 @@ package.json
 gulpfile.js
 
 var gulp = require("gulp");
+
 var babel = require("gulp-babel");
+
 var sass = require('gulp-sass');
+
 var pump = require('pump');
+
 var uglify = require('gulp-uglify');
+
 var autoprefixer = require('gulp-autoprefixer');
+
 var browserSync = require('browser-sync').create();
 
 gulp.task("pageJS", function () { return gulp.src('src/js/*.js') .pipe(babel()) .pipe(gulp.dest('./dist/js')); });
